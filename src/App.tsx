@@ -8,6 +8,11 @@ import { Button, FlexBoxCol, FlexBoxRow } from "./components/styled/styled";
 import { useTonConnect } from "./hooks/useTonConnect";
 import { CHAIN } from "@tonconnect/protocol";
 import "@twa-dev/sdk";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Layout from "./pages/Layout";
+import NoPage from "./pages/NoPage";
+import Landing from "./pages/Landing";
+import Organization from "./pages/Organization";
 
 const StyledApp = styled.div`
   background-color: #e8e8e8;
@@ -30,25 +35,35 @@ function App() {
   const { network } = useTonConnect();
 
   return (
-    <StyledApp>
-      <AppContainer>
-        <FlexBoxCol>
-          <FlexBoxRow>
-            <TonConnectButton />
-            <Button>
-              {network
-                ? network === CHAIN.MAINNET
-                  ? "mainnet"
-                  : "testnet"
-                : "N/A"}
-            </Button>
-          </FlexBoxRow>
-          <Counter />
-          <TransferTon />
-          <Jetton />
-        </FlexBoxCol>
-      </AppContainer>
-    </StyledApp>
+    // <StyledApp>
+    //   <AppContainer>
+    //     <FlexBoxCol>
+    //       <FlexBoxRow>
+    //         <TonConnectButton />
+    //         <Button>
+    //           {network
+    //             ? network === CHAIN.MAINNET
+    //               ? "mainnet"
+    //               : "testnet"
+    //             : "N/A"}
+    //         </Button>
+    //       </FlexBoxRow>
+    //       <Counter />
+    //       <TransferTon />
+    //       <Jetton />
+    //     </FlexBoxCol>
+    //   </AppContainer>
+    // </StyledApp>
+
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Layout />}>
+          <Route index element={<Landing />} />
+          <Route path="/organization" element={<Organization />} />
+          <Route path="*" element={<NoPage />} />
+        </Route>
+      </Routes>
+    </BrowserRouter>
   );
 }
 
