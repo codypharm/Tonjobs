@@ -1,14 +1,69 @@
 import React from 'react'
 import { Button } from './ui/button'
 import { FaPlus } from 'react-icons/fa6'
+import {
+    Dialog,
+    DialogClose,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from "@/components/ui/dialog"
+import { Input } from "@/components/ui/input"
+import { Link } from 'react-router-dom'
+
 
 export default function OrganizationView() {
     return (
         <div className='h-[90%] py-2'>
             <div className='h-[10%]  flex justify-between items-center font-semibold text-foreground px-2'>
-                <Button variant={"secondary"}>Back  </Button>
-                <Button variant={"secondary"} className='flex gap-2'> Add <FaPlus /></Button>
+                <Link to="/"><Button variant={"secondary"}>Back  </Button></Link>
+                {/* <Button variant={"secondary"} className='flex gap-2'> Add <FaPlus /></Button> */}
+                {/* Dialog for adding organization */}
+                <Dialog>
+                    <DialogTrigger asChild>
+                        <Button variant={"secondary"} className='flex gap-2'> Add <FaPlus /></Button>
+                    </DialogTrigger>
+                    <DialogContent className="sm:max-w-[425px]">
+                        <DialogHeader>
+                            <DialogTitle>Organizations</DialogTitle>
+                            <DialogDescription>
+                                Add an organization to your list.
+                            </DialogDescription>
+                        </DialogHeader>
+                        <div className="grid gap-4 py-4">
+                            <div className="grid grid-cols-1 items-center gap-4">
+
+                                <Input
+                                    id="name"
+                                    // defaultValue="Pedro Duarte"
+                                    className=""
+                                    placeholder='Enter org name'
+                                    type='text'
+                                />
+                                <Input
+                                    id="url"
+                                    // defaultValue="Pedro Duarte"
+                                    className=""
+                                    placeholder='Enter org url'
+                                    type='text'
+                                />
+                            </div>
+
+
+                        </div>
+                        <DialogFooter>
+                            <DialogClose asChild>
+                                <Button type="submit">Save</Button>
+                            </DialogClose>
+                        </DialogFooter>
+                    </DialogContent>
+                </Dialog>
             </div>
+
+
 
             {/* org list */}
             <div className='h-[90%] flex flex-col gap-2 border-b border-border  font-semibold text-foreground px-2 overflow-y-auto'>
