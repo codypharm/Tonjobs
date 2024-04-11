@@ -17,7 +17,7 @@ import { Link } from 'react-router-dom'
 
 export default function OrganizationView() {
     return (
-        <div className='h-[90%] py-2'>
+        <div className='h-full py-2'>
             <div className='h-[10%]  flex justify-between items-center font-semibold text-foreground px-2'>
                 <Link to="/"><Button variant={"secondary"}>Back  </Button></Link>
                 {/* <Button variant={"secondary"} className='flex gap-2'> Add <FaPlus /></Button> */}

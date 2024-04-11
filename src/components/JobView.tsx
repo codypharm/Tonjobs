@@ -1,23 +1,25 @@
 import React from 'react'
-import { Button } from './ui/button'
-import { FaPlus } from 'react-icons/fa6'
-import PendingList from './PendingList'
-import ActiveList from './ActiveList'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import CompletedList from './CompletedList'
+import ActiveList from './ActiveList'
+import PendingList from './PendingList'
 
 export default function JobView() {
     return (
-        <div className='h-[90%] py-2'>
 
-            <div className='h-[10%] border-b border-border flex gap-3 justify-center items-center font-semibold text-foreground '>
-                <h2 className=' h-full w-[50%] cursor-pointer   flex justify-center items-center'>Pending</h2>
-                <h2 className=' h-full w-[50%] cursor-pointer   flex justify-center items-center text-gray-400'>Active</h2>
-                <h2 className=' h-full w-[50%] cursor-pointer   flex justify-center items-center text-gray-400'>Completed</h2>
-            </div>
+        <div className='h-full '>
+            <Tabs defaultValue="pending" className="h-full ">
+                <TabsList className='h-[10%] w-full bg-background'>
+                    <TabsTrigger value="pending">Pending</TabsTrigger>
+                    <TabsTrigger value="active">Active</TabsTrigger>
+                    <TabsTrigger value="completed">Completed</TabsTrigger>
+                </TabsList>
+                <TabsContent value="pending" className='h-[90%] '><PendingList /> </TabsContent>
+                <TabsContent value="active" className='h-[90%]'><ActiveList /></TabsContent>
+                <TabsContent value="completed" className='h-[90%]'><CompletedList /></TabsContent>
+            </Tabs>
 
-            {/* <PendingList /> */}
-            {/* <ActiveList /> */}
-            <CompletedList />
         </div>
+
     )
 }
