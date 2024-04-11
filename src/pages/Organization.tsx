@@ -70,11 +70,11 @@ export default function Organization() {
 
             </div>
             <Tabs defaultValue="organizations" className="h-[65%] bg-background rounded-tr-2xl rounded-tl-2xl">
-                <TabsList className='h-[10%] w-full'>
+                <TabsList className=' h-[10%] sm:h-[13%] w-full'>
                     <TabsTrigger value="organizations">Organizations</TabsTrigger>
                     <TabsTrigger value="jobs">Jobs</TabsTrigger>
                 </TabsList>
-                <TabsContent value="organizations" className='h-[90%]'><OrganizationView /> </TabsContent>
+                <TabsContent value="organizations" className='h-[90%] sm:h-[87%]'><OrganizationView /> </TabsContent>
                 <TabsContent value="jobs" className='h-[90%]'><JobView /></TabsContent>
             </Tabs>
 
