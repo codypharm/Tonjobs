@@ -25,12 +25,12 @@ export default function Organization() {
 
             <div className='h-[35%] w-full  flex flex-col gap-10 justify-center items-center '>
                 <div className=' flex w-fit gap-4 h-fit'>
-                    <div className='flex flex-col gap-6 justify-between text-sm font-semibold text-white'>
-                        <p className='text-neutral-400'>Balance:</p>
+                    <div className='flex flex-col gap-3 justify-between text-sm font-semibold text-white'>
+                        <p className='text-neutral-400'>Balance</p>
                         <p>1.25 TON</p>
                     </div>
-                    <div className='flex flex-col gap-6 justify-between text-sm font-semibold text-white'>
-                        <p className='text-neutral-400'>Allocated:</p>
+                    <div className='flex flex-col gap-3 justify-between text-sm font-semibold text-white'>
+                        <p className='text-neutral-400'>Allocated</p>
                         <p>1.25 TON</p>
                     </div>
 
