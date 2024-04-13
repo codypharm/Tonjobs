@@ -12,7 +12,7 @@ export default function Profile() {
             <div className='h-[10%]  flex  items-center'>
 
                 <div className="h-full w-[90%] flex gap-2 items-center">
-                    <img src="/logo.png" className="w-12 h-12 rounded-full" />
+                    <img src="https://avatars.githubusercontent.com/u/30694065?v=4" className="w-12 h-12 rounded-full" />
                     <div className=" flex flex-col h-full justify-center ">
                         <p className="text-green-400 font-semibold text-lg">@techynonso</p>
                         <p className="flex gap-2">

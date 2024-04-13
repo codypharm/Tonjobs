@@ -29,7 +29,7 @@ export default function Contributor() {
             <div className='h-[10%]  flex  items-center'>
 
                 <div className="h-full w-[90%] flex gap-2 items-center">
-                    <img src="/logo.png" className="w-12 h-12 rounded-full" />
+                    <img src="https://avatars.githubusercontent.com/u/30694065?v=4" className="w-12 h-12 rounded-full" />
                     <div className=" flex flex-col h-full justify-center ">
                         <Link to={`/profile/${"techynonso"}`} className="text-green-400 font-semibold text-lg">@techynonso</Link>
                         <p className="flex gap-2">
