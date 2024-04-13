@@ -13,6 +13,8 @@ import Layout from "./pages/Layout";
 import NoPage from "./pages/NoPage";
 import Landing from "./pages/Landing";
 import Organization from "./pages/Organization";
+import Contributor from "./pages/Contributor";
+import Profile from "./pages/Profile";
 
 const StyledApp = styled.div`
   background-color: #e8e8e8;
@@ -60,6 +62,8 @@ function App() {
         <Route path="/" element={<Layout />}>
           <Route index element={<Landing />} />
           <Route path="/organization" element={<Organization />} />
+          <Route path="/contributor" element={<Contributor />} />
+          <Route path="/profile/:id" element={<Profile />} />
           <Route path="*" element={<NoPage />} />
         </Route>
       </Routes>

@@ -75,7 +75,7 @@ export default function Organization() {
                     <TabsTrigger value="jobs">Jobs</TabsTrigger>
                 </TabsList>
                 <TabsContent value="organizations" className='h-[87%]'><OrganizationView /> </TabsContent>
-                <TabsContent value="jobs" className='h-[90%]'><JobView /></TabsContent>
+                <TabsContent value="jobs" className='h-[87%]'><JobView /></TabsContent>
             </Tabs>
 
 

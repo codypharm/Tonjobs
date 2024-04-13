@@ -13,7 +13,7 @@ const Landing = () => {
                 <p className="font-semibold text-xl text-center">Continue as</p>
                 <div className="flex gap-2 justify-center my-3">
                     <Link to={"/organization"}><Button variant="outline" >Organization </Button></Link>
-                    <Button variant={"outline"}>Contributor </Button>
+                    <Link to={"/contributor"}> <Button variant={"outline"}>Contributor </Button></Link>
 
                 </div>
                 <div className="flex gap-2 justify-center my-3">
