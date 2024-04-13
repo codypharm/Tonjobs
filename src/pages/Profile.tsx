@@ -37,7 +37,7 @@ export default function Profile() {
 
             {/* org list */}
             <div className='h-[85%]   font-semibold text-foreground  pt-10 '>
-                <div className='flex justify-between items-center border-b border-border h-[8%]'>
+                <div className='flex justify-between items-center border-b border-border h-[10%]'>
                     <div>
                         <h3 className='font-semibold text-md'>Completed Jobs</h3>
                     </div>
@@ -50,7 +50,7 @@ export default function Profile() {
                         </div>
                     </div>
                 </div>
-                <div className='h-[92%] overflow-y-auto py-3'>
+                <div className='h-[90%] overflow-y-auto py-3'>
                     <UserCompletedJobList />
                 </div>
 
