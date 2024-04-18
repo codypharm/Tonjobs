@@ -1,8 +1,8 @@
 import { Link } from "react-router-dom";
 import logo from "/logo.png"
 import { Button } from "@/components/ui/button"
-import { FaGithub } from "react-icons/fa";
 import { GoWorkflow } from "react-icons/go";
+import GitHubOAuth from "@/components/GithubOAuth";
 const Landing = () => {
     return (
         <div className=" h-full  flex flex-col  items-center justify-center gap-10">
@@ -17,9 +17,7 @@ const Landing = () => {
 
                 </div>
                 <div className="flex gap-2 justify-center my-3">
-
-                    <Button variant={"outline"} className="flex  gap-3"><FaGithub /> Login </Button>
-
+                <GitHubOAuth />
                 </div>
             </div>
         </div>
