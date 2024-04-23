@@ -1,3 +1,5 @@
+import React, { useContext, useEffect, useState } from "react";
+import { AuthContext } from "@/App";
 import { Button } from "./ui/button";
 import { FaPlus } from "react-icons/fa6";
 import {
@@ -21,8 +23,26 @@ import {
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Link } from "react-router-dom";
+import JobList from "./JobList";
+import { getOrgs } from "@/lib/github.utils";
 
+interface IOrgs {
+  login: string;
+  id: number;
+}
 export default function OrganizationView() {
+  const { state, dispatch } = useContext(AuthContext);
+  const [orgs, setOrgs] = useState<IOrgs[] | null>(null);
+
+  const getUsersOrgs = async () => {
+    console.log(state.user.access_token);
+    const orgs = await getOrgs(state.user.access_token);
+    setOrgs(orgs);
+  };
+
+  useEffect(() => {
+    getUsersOrgs();
+  }, [state]);
   return (
     <div className="h-full py-2">
       <div className="h-[10%]  flex justify-between items-center font-semibold text-foreground px-2">
@@ -40,7 +60,7 @@ export default function OrganizationView() {
           </DialogTrigger>
           <DialogContent className="sm:max-w-[425px]">
             <DialogHeader>
-              <DialogTitle>Organizations</DialogTitle>
+              <DialogTitle>Job</DialogTitle>
               <DialogDescription>
                 Add an organization to your list.
               </DialogDescription>
@@ -54,8 +74,9 @@ export default function OrganizationView() {
                   <SelectContent>
                     <SelectGroup>
                       <SelectLabel>Organizations</SelectLabel>
-                      <SelectItem value="decenterai">Decenter AI</SelectItem>
-                      <SelectItem value="tonjobs">TonJobs</SelectItem>
+                      {orgs?.map((org, idx) => (
+                        <SelectItem value={org.login}>{org.login}</SelectItem>
+                      ))}
                     </SelectGroup>
                   </SelectContent>
                 </Select>
@@ -84,17 +105,7 @@ export default function OrganizationView() {
       </div>
 
       {/* org list */}
-      <div className="h-[90%] flex flex-col gap-2 border-b border-border  font-semibold text-foreground px-2 overflow-y-auto">
-        <div className="w-full h-auto py-2 px-3 border-b border-border hover:shadow-sm ">
-          <div className=" flex gap-2 w-full">
-            <span className="text-sm font-semibold">Decenter AI : </span>
-            <span className="text-sm font-light">App.decenterai.com</span>
-          </div>
-          <div className="flex justify-between text-sm items-center font-semibold mt-2 text-gray-400">
-            <p>Issues: 30</p>
-          </div>
-        </div>
-      </div>
+      <JobList />
 
       {/* Empty org component */}
       {/* <div className='h-[90%] border-b border-border  font-semibold text-foreground px-2'>
