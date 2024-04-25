@@ -37,6 +37,7 @@ export default function OrganizationView() {
   const getUsersOrgs = async () => {
     console.log(state.user.access_token);
     const orgs = await getOrgs(state.user.access_token);
+    console.log(orgs);
     setOrgs(orgs);
   };
 
