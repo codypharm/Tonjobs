@@ -16,8 +16,17 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { TonConnectButton } from "@tonconnect/ui-react";
+import { useContext } from "react";
+import { AuthContext } from "@/App";
+import { useTonClient } from "@/hooks/useTonClient";
+import { useTonConnect } from "@/hooks/useTonConnect";
+import { CHAIN } from "@tonconnect/protocol";
 
 export default function Organization() {
+  const { state, dispatch } = useContext(AuthContext);
+  const { network } = useTonConnect();
+
   return (
     <div className=" h-full  flex flex-col  bg-baseGround">
       <div className="h-[35%] w-full  flex flex-col gap-10 justify-center items-center ">
@@ -30,6 +39,16 @@ export default function Organization() {
             <p className="text-neutral-400">Allocated</p>
             <p>1.25 TON</p>
           </div>
+        </div>
+        <div className="flex gap-2">
+          {state.isLoggedIn && <TonConnectButton />}
+          <Button>
+            {network
+              ? network === CHAIN.MAINNET
+                ? "mainnet"
+                : "testnet"
+              : "N/A"}
+          </Button>
         </div>
         <Dialog>
           <DialogTrigger asChild>

@@ -62,7 +62,7 @@ export default function OrganizationView() {
             <DialogHeader>
               <DialogTitle>Job</DialogTitle>
               <DialogDescription>
-                Add an organization to your list.
+                Select and Organization and repo to create a job.
               </DialogDescription>
             </DialogHeader>
             <div className="grid gap-4 py-4">
@@ -75,7 +75,9 @@ export default function OrganizationView() {
                     <SelectGroup>
                       <SelectLabel>Organizations</SelectLabel>
                       {orgs?.map((org, idx) => (
-                        <SelectItem value={org.login}>{org.login}</SelectItem>
+                        <SelectItem key={idx} value={org.login}>
+                          {org.login}
+                        </SelectItem>
                       ))}
                     </SelectGroup>
                   </SelectContent>
