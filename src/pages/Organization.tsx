@@ -1,3 +1,4 @@
+"use client";
 import { Button } from "@/components/ui/button";
 import { GrDropbox } from "react-icons/gr";
 import { FaPlus } from "react-icons/fa6";
@@ -17,15 +18,20 @@ import {
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { TonConnectButton } from "@tonconnect/ui-react";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { AuthContext } from "@/App";
 import { useTonClient } from "@/hooks/useTonClient";
 import { useTonConnect } from "@/hooks/useTonConnect";
 import { CHAIN } from "@tonconnect/protocol";
+import { useOrganisationContract } from "@/hooks/useOrgContract";
 
 export default function Organization() {
   const { state, dispatch } = useContext(AuthContext);
+  const [amt, setAmt] = useState<number>(0);
   const { network } = useTonConnect();
+  const { addRepo } = useOrganisationContract();
+
+  const deposit = async () => {};
 
   return (
     <div className=" h-full  flex flex-col  bg-baseGround">
@@ -66,6 +72,10 @@ export default function Organization() {
                 <Input
                   id="name"
                   // defaultValue="Pedro Duarte"
+                  value={amt}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                    setAmt(Number(e.target.value))
+                  }
                   className=""
                   placeholder="Enter amount"
                   type="number"
@@ -74,7 +84,9 @@ export default function Organization() {
             </div>
             <DialogFooter>
               <DialogClose asChild>
-                <Button type="submit">Deposit</Button>
+                <Button onClick={deposit} type="submit">
+                  Deposit
+                </Button>
               </DialogClose>
             </DialogFooter>
           </DialogContent>

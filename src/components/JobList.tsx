@@ -3,7 +3,7 @@ import { AuthContext } from "@/App";
 
 export default function JobList() {
   const { state, dispatch } = useContext(AuthContext);
-  console.log(state.user.access_token);
+  // console.log(state.user.access_token);
 
   useEffect(() => {});
   return (

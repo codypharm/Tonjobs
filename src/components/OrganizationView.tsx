@@ -1,3 +1,4 @@
+"use client";
 import React, { useContext, useEffect, useState } from "react";
 import { AuthContext } from "@/App";
 import { Button } from "./ui/button";
@@ -25,6 +26,7 @@ import { Input } from "@/components/ui/input";
 import { Link } from "react-router-dom";
 import JobList from "./JobList";
 import { getOrgs } from "@/lib/github.utils";
+import { useOrganisationContract } from "@/hooks/useOrgContract";
 
 interface IOrgs {
   login: string;
@@ -33,6 +35,28 @@ interface IOrgs {
 export default function OrganizationView() {
   const { state, dispatch } = useContext(AuthContext);
   const [orgs, setOrgs] = useState<IOrgs[] | null>(null);
+  const { getBalance, getRepos, getAvailableAmount, getJobs } =
+    useOrganisationContract();
+
+  const checkBal = async () => {
+    const bal: any = await getBalance();
+    console.log(bal);
+  };
+
+  const fetchRepos = async () => {
+    const repos = await getRepos();
+    console.log(repos);
+  };
+
+  const fetchJobs = async () => {
+    const jobs = await getJobs();
+    console.log(jobs);
+  };
+
+  const fetchAvailableAmount = async () => {
+    const amt = await getAvailableAmount();
+    console.log(amt);
+  };
 
   const getUsersOrgs = async () => {
     console.log(state.user.access_token);
@@ -44,6 +68,9 @@ export default function OrganizationView() {
   useEffect(() => {
     getUsersOrgs();
   }, [state]);
+
+  fetchJobs();
+
   return (
     <div className="h-full py-2">
       <div className="h-[10%]  flex justify-between items-center font-semibold text-foreground px-2">
