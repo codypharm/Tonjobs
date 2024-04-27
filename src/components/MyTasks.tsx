@@ -1,7 +1,8 @@
 import React from "react";
+import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 
-export default function OpenJobList() {
+export default function MyTasks() {
   return (
     <div className="h-full flex flex-col gap-2   font-semibold text-foreground px-2 overflow-y-auto pb-10">
       <div className="w-full flex flex-col gap-3 h-auto py-2 rounded-md mt-4 px-2 border border-border ">
@@ -14,12 +15,7 @@ export default function OpenJobList() {
           <span className="text-green-500 font-semibold">1 Ton</span>
         </div>
         <p className="font-semibold text-sm">Landing Page of Decenter Ai</p>
-        <Button
-          variant={"secondary"}
-          className="hover:bg-primary hover:text-white"
-        >
-          Accept
-        </Button>
+        <Button className="hover:bg-primary hover:text-white">Claim</Button>
       </div>
     </div>
   );

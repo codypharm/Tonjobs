@@ -19,7 +19,7 @@ import OrganizationView from "@/components/OrganizationView";
 import JobView from "@/components/JobView";
 import OpenJobs from "@/components/OpenJobs";
 import LeaderBoard from "@/components/LeaderBoard";
-import Claim from "@/components/Claim";
+import MyTasks from "@/components/MyTasks";
 import { useContext } from "react";
 import { AuthContext } from "@/App";
 import { TonConnectButton } from "@tonconnect/ui-react";
@@ -70,7 +70,7 @@ export default function Contributor() {
           <TabsList className=" h-[10%] w-full bg-white rounded-none border-b-2">
             <TabsTrigger value="jobs">Jobs</TabsTrigger>
             <TabsTrigger value="board">Leader Board</TabsTrigger>
-            <TabsTrigger value="claim">Claim</TabsTrigger>
+            <TabsTrigger value="MyTasks">Tasks</TabsTrigger>
           </TabsList>
           <TabsContent value="jobs" className="h-[87%]">
             <OpenJobs />{" "}
@@ -78,8 +78,8 @@ export default function Contributor() {
           <TabsContent value="board" className="h-[87%]">
             <LeaderBoard />
           </TabsContent>
-          <TabsContent value="claim" className="h-[87%]">
-            <Claim />
+          <TabsContent value="MyTasks" className="h-[87%]">
+            <MyTasks />
           </TabsContent>
         </Tabs>
       </div>

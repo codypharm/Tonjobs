@@ -17,12 +17,15 @@ import Contributor from "./pages/Contributor";
 import Profile from "./pages/Profile";
 import { createContext, useReducer } from "react";
 import { initialState, reducer } from "./lib/reducer";
+import { initialJobState, jobReducer } from "./lib/jobReducer";
 
 export const AuthContext = createContext<any>(null);
+export const JobContext = createContext<any>(null);
 
 function App() {
   const { network } = useTonConnect();
   const [state, dispatch] = useReducer(reducer, initialState);
+  const [jobState, dispatchJob] = useReducer(jobReducer, initialJobState);
 
   return (
     // <StyledApp>
@@ -50,17 +53,24 @@ function App() {
         dispatch,
       }}
     >
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Layout />}>
-            <Route index element={<Landing />} />
-            <Route path="/organization" element={<Organization />} />
-            <Route path="/contributor" element={<Contributor />} />
-            <Route path="/profile/:id" element={<Profile />} />
-            <Route path="*" element={<NoPage />} />
-          </Route>
-        </Routes>
-      </BrowserRouter>
+      <JobContext.Provider
+        value={{
+          jobState,
+          dispatchJob,
+        }}
+      >
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<Layout />}>
+              <Route index element={<Landing />} />
+              <Route path="/organization" element={<Organization />} />
+              <Route path="/contributor" element={<Contributor />} />
+              <Route path="/profile/:id" element={<Profile />} />
+              <Route path="*" element={<NoPage />} />
+            </Route>
+          </Routes>
+        </BrowserRouter>
+      </JobContext.Provider>
     </AuthContext.Provider>
   );
 }

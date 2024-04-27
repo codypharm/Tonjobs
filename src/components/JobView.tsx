@@ -6,7 +6,7 @@ import PendingList from "./PendingList";
 
 export default function JobView() {
   return (
-    <div className="h-full ">
+    <div className="h-full pt-3">
       <Tabs defaultValue="pending" className="h-full ">
         <div className=" flex gap-2 w-full justify-center">
           <span className="text-sm font-semibold">Decenter AI : </span>
