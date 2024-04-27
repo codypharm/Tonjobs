@@ -19,7 +19,7 @@ import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { TonConnectButton } from "@tonconnect/ui-react";
 import { useContext, useState } from "react";
-import { AuthContext } from "@/App";
+import { AuthContext, JobContext } from "@/App";
 import { useTonClient } from "@/hooks/useTonClient";
 import { useTonConnect } from "@/hooks/useTonConnect";
 import { CHAIN } from "@tonconnect/protocol";
@@ -27,10 +27,13 @@ import { useOrganisationContract } from "@/hooks/useOrgContract";
 
 export default function Organization() {
   const { state, dispatch } = useContext(AuthContext);
+  const { jobState, jobDispatch } = useContext(JobContext);
+
   const [amt, setAmt] = useState<number>(0);
   const { network } = useTonConnect();
   const { addRepo } = useOrganisationContract();
-
+  const [selectedJob, setSelectedJob] = useState<number | null>(null);
+  console.log(jobState);
   const deposit = async () => {};
 
   return (
@@ -92,21 +95,34 @@ export default function Organization() {
           </DialogContent>
         </Dialog>
       </div>
-      <Tabs
+      <div
         defaultValue="jobs"
-        className="h-[65%] bg-background rounded-tr-2xl rounded-tl-2xl"
+        className="h-[65%] bg-background  rounded-tr-2xl rounded-tl-2xl"
       >
-        <TabsList className=" h-[13%] w-full">
-          <TabsTrigger value="jobs">Jobs</TabsTrigger>
-          <TabsTrigger value="issues">Issues</TabsTrigger>
-        </TabsList>
-        <TabsContent value="jobs" className="h-[87%]">
-          <OrganizationView />{" "}
-        </TabsContent>
-        <TabsContent value="issues" className="h-[87%]">
-          <JobView />
-        </TabsContent>
-      </Tabs>
+        {!jobState.isJobSelected && (
+          <div className="h-[13%] flex items-center bg-gray-100 justify-center font-semibold text-sm rounded-tr-2xl rounded-tl-2xl">
+            Jobs
+          </div>
+        )}
+
+        {jobState.isJobSelected && (
+          <div className="h-[13%] flex items-center bg-gray-100 justify-center font-semibold text-sm rounded-tr-2xl rounded-tl-2xl">
+            Issues
+          </div>
+        )}
+
+        {!jobState.isJobSelected && (
+          <div className="h-[87%]">
+            <OrganizationView />
+          </div>
+        )}
+
+        {jobState.isJobSelected && (
+          <div className="h-[87%]">
+            <JobView />
+          </div>
+        )}
+      </div>
     </div>
   );
 }

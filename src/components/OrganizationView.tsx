@@ -34,6 +34,7 @@ interface IOrgs {
 }
 export default function OrganizationView() {
   const { state, dispatch } = useContext(AuthContext);
+
   const [orgs, setOrgs] = useState<IOrgs[] | null>(null);
   const { getBalance, getRepos, getAvailableAmount, getJobs } =
     useOrganisationContract();
@@ -59,9 +60,9 @@ export default function OrganizationView() {
   };
 
   const getUsersOrgs = async () => {
-    console.log(state.user.access_token);
+    //.log(state.user.access_token);
     const orgs = await getOrgs(state.user.access_token);
-    console.log(orgs);
+    //console.log(orgs);
     setOrgs(orgs);
   };
 
@@ -69,7 +70,7 @@ export default function OrganizationView() {
     getUsersOrgs();
   }, [state]);
 
-  fetchJobs();
+  //fetchJobs();
 
   return (
     <div className="h-full py-2">
