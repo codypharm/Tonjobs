@@ -18,6 +18,16 @@ struct Job {
     employer:Address;
 }
 
+struct Deposit {
+    user: Address;
+    amount: Int as coins;
+}
+
+struct Income {
+    user: Address;
+    amount: Int as coins;
+}
+
 
 
 message JobCompleted {
@@ -30,12 +40,6 @@ message JobCancelled {
 message ActivateJob {
     repoId: Int as int64;
     issueId: Int as int64;
-    isActive: Bool = false;
-    reward: Int as coins;
-    isCompleted: Bool = false;
-    completedBy: Address?;
-    owner: Address?;
-    empoloyer:Address;
 }
 
 message VerifyJobCancellation {
@@ -59,15 +63,17 @@ contract Organisation with Deployable {
     owner: Address;
     operator: Address ; // address of verifier
     jobs: map<Int, Job>;
-    repoCount: Int = 0; // nuumber of repo added starts with key = 1
+    userDeposits: map<Address, Deposit> ;
+    userIncomes: map<Address, Income>;
     jobCount: Int = 0; // nuumber of jobs added starts with key = 1
     charge: Int as coins = ton("0.5");
     accountBalance: Int as coins = ton("0");
-   
+   id: Int as int32;
 
-    init(){
+    init(id: Int){
         self.owner = sender();
         self.operator = sender();
+        self.id = id;
     }
 
     
@@ -95,14 +101,31 @@ contract Organisation with Deployable {
         let limit :Int  = ton("0.05") + self.charge;
         let ctx : Context = context();
         let reward : Int  = ctx.value - limit;
-        self.accountBalance += self.charge;
-
+        let deps: Deposit? = self.userDeposits.get(sender());
+        
         require(ctx.value > limit, "Value sent is less than limit");
         require (reward > 0, "Reward is too low");
+        //amount made by admin
+        self.accountBalance += self.charge;
 
+        //check if record exists
+        if(deps != null){
+            let mydeps: Deposit = self.userDeposits.get(sender())!!;
+            let bal: Int  = mydeps.amount;
+            bal += reward;
+            self.userDeposits.set(sender(),
+                Deposit{user: sender(), amount: bal}
+            );
+        }else{
+            self.userDeposits.set(sender(),
+            Deposit{user: sender(), amount: reward}
+            );
+        }
+       
         self.jobs.set(msg.issueId,
             Job{repoId: msg.repoId, issueId: msg.issueId, isActive: true, reward: reward, completedBy: null,owner: null, employer: sender()}
         );
+       
     }
 
     receive (msg: VerifyJobCancellation){
@@ -113,12 +136,25 @@ contract Organisation with Deployable {
         );
     }
 
+//run after verifying cancellation.
     receive(msg: JobCancelled){
     
         let job: Job = self.jobs.get(msg.issueId)!!;
         require(job.isActive == false, "Job still active");
         require(job.reward > 0, "Job already claimed");
-        require(job.employer == sender(), "Invlid job cancellation");
+        require(job.employer == sender(), "Unauthorized job cancellation");
+        
+        let depsData: Deposit? = self.userDeposits.get(sender());
+        if(depsData != null){
+            let deps: Deposit = self.userDeposits.get(sender())!!;
+            let bal: Int  = deps.amount;
+            bal -= job.reward;
+            self.userDeposits.set(sender(),
+                Deposit{user: sender(), amount: bal}
+            );
+        } 
+        
+
         self.jobs.set(msg.issueId,
             Job{repoId: job.repoId, issueId: job.issueId, isActive: false, reward: ton("0"), completedBy: job.completedBy,owner: sender(), employer: job.employer}
         );
@@ -135,6 +171,7 @@ contract Organisation with Deployable {
     // for contributor
   receive (msg: VerifyJobClaim){
         let job : Job = self.jobs.get(msg.issueId)!!;
+        require (sender() == self.operator, "Unauthorized operator");
         require(job.isActive == true, "Job not active");
          self.jobs.set(msg.issueId,
             Job{repoId: job.repoId, issueId: job.issueId, isActive: false, reward: job.reward, completedBy:msg.completedBy ,owner: msg.completedBy,employer: job.employer}
@@ -147,6 +184,21 @@ contract Organisation with Deployable {
         require(job.isActive == false, "Job still active");
         require(job.reward > 0, "Job already claimed");
         require(job.owner == sender(), "Invlid job claim");
+        let incsData: Income? = self.userIncomes.get(sender());
+       
+        if(incsData != null){
+            let incs : Income = self.userIncomes.get(sender())!!;
+            let bal: Int  = incs.amount;
+            bal += job.reward;
+            self.userIncomes.set(sender(),
+                Income{user: sender(), amount: bal}
+            );
+        }else{
+            self.userIncomes.set(sender(),
+                Income{user: sender(), amount: job.reward}
+            );
+        }
+
         self.jobs.set(msg.issueId,
              Job{repoId: job.repoId, issueId: job.issueId, isActive: false, reward: ton("0"), completedBy: job.completedBy,owner: sender(), employer: job.employer, isCompleted: true}
         );
@@ -163,8 +215,42 @@ contract Organisation with Deployable {
         return self.accountBalance.toCoinsString();
     }
 
-    get fun job(id: Int) : Job{
-        return self.jobs.get(id)!!;
+    get fun charge(): String {
+        return self.charge.toCoinsString();
+    }
+
+    get fun job(id: Int) : Job?{
+        let data : Job? = self.jobs.get(id);
+        if(data != null){
+            return self.jobs.get(id)!!;
+        }else{
+            return null;
+        }
+    }
+
+    get fun incomeData(addr : Address) : Income? {
+        
+        let data: Income? = self.userIncomes.get(addr);
+        if(data != null){
+            return self.userIncomes.get(addr)!!;
+        }else{
+            return null;
+        }
+    }
+
+     get fun depositData(addr : Address) : String?  {
+        let data: Deposit? =  self.userDeposits.get(addr);
+        if(data != null){
+            let defData: Deposit =  self.userDeposits.get(addr)!!;
+            return defData.amount.toCoinsString();
+        }else{
+            return null;
+        }
+       
+    }
+
+    get fun financeOperator() : Address {
+        return self.operator;
     }
 
     // get fun getJobs(): map<Int, Jobs> {
