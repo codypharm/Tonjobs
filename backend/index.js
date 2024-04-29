@@ -2,9 +2,12 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const FormData = require("form-data");
 const fetch = require("node-fetch");
+const MongoClient = require("mongodb").MongoClient;
+const multer = require("multer");
 const { client_id, redirect_uri, client_secret } = require("./config");
-
+const taskRouter = require("./routes/taskRoute");
 const config = require("./config");
+const connectDB = require("./db");
 
 const app = express();
 
@@ -56,7 +59,16 @@ app.post("/authenticate", (req, res) => {
     });
 });
 
+app.use("/api/v1/tasks", taskRouter);
+
 app.get("/", (req, res) => {});
 
+const DB_URL = process.env.MONGO_URI;
+console.log(DB_URL);
+let database;
+
 const PORT = process.env.SERVER_PORT || 3000;
-app.listen(PORT, () => console.log(`Listening on ${PORT}`));
+connectDB();
+app.listen(PORT, () => {
+  console.log(`Listening on ${PORT}`);
+});
