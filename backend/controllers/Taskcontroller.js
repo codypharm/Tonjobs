@@ -1,9 +1,9 @@
-import express from "express";
-import { StatusCodes } from "http-status-codes";
-import Games from "../models/GamesModel";
+const express = require("express");
+const { StatusCodes } = require("http-status-codes");
+const Tasks = require("../models/TaskModel");
 
 // create task
-export const createTask = async (req, res) => {
+const createTask = async (req, res) => {
   try {
     // create user
     const game = await Games.create({ ...req.body });
@@ -26,4 +26,8 @@ export const createTask = async (req, res) => {
     // throw error
     res.status(StatusCodes.BAD_REQUEST).send(error);
   }
+};
+
+module.exports = {
+  createTask,
 };

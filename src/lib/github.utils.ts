@@ -41,5 +41,23 @@ export async function getOrgs(accessCode: string): Promise<any[]> {
   }
 }
 
+export async function getRepos(org: string, accessCode: string) {
+  try {
+    const response = await axios.get(
+      `https://api.github.com/orgs/${org}/repos`,
+      {
+        headers: {
+          Authorization: `Bearer ${accessCode}`,
+        },
+      }
+    );
 
-//get 
+    console.log(response.data);
+    return response.data;
+  } catch (error) {
+    console.error("Error getting user organizations:", error);
+    return [];
+  }
+}
+
+//get

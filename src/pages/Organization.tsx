@@ -33,7 +33,7 @@ export default function Organization() {
   const { network } = useTonConnect();
   const { addRepo } = useOrganisationContract();
   const [selectedJob, setSelectedJob] = useState<number | null>(null);
-  console.log(jobState);
+  // console.log(jobState);
   const deposit = async () => {};
 
   return (

@@ -1,9 +1,11 @@
 import React, { useContext, useEffect } from "react";
 import { AuthContext, JobContext } from "@/App";
+import { useGetJobs } from "@/hooks/useGetJobs";
 
 export default function JobList() {
   const { state, dispatch } = useContext(AuthContext);
   const { jobState, dispatchJob } = useContext(JobContext);
+  const { jobs } = useGetJobs();
 
   // console.log(state.user.access_token);
   const changeJob = () => {
@@ -15,32 +17,23 @@ export default function JobList() {
 
   useEffect(() => {});
   return (
-    <div className="h-[90%] flex flex-col gap-2 border-b border-border  font-semibold text-foreground px-2 overflow-y-auto">
-      <div
-        onClick={changeJob}
-        className="w-full h-auto py-2 px-3 border-b border-border hover:shadow-sm "
-      >
-        <div className=" flex gap-2 w-full">
-          <span className="text-sm font-semibold">Decenter AI : </span>
-          <span className="text-sm font-light">App.decenterai.com</span>
-        </div>
-        <div className="flex justify-between text-sm items-center font-semibold mt-2 text-gray-400">
-          <p>Issues: 30</p>
-        </div>
-      </div>
+    <div className="h-[90%] pt-4 flex flex-col gap-2 border-b border-border  font-semibold text-foreground px-2 overflow-y-auto">
+      {jobs.map((job, id) => (
+        <div
+          key={id}
+          onClick={changeJob}
+          className="w-full h-auto py-2 px-3 border-b border-border hover:shadow-sm "
+        >
+          <div className=" flex gap-2 w-full">
+            <span className="text-sm font-semibold">{job.org}: </span>
+            <span className="text-sm font-light">{job.repo}</span>
+          </div>
 
-      <div
-        onClick={changeJob}
-        className="w-full h-auto py-2 px-3 border-b border-border hover:shadow-sm "
-      >
-        <div className=" flex gap-2 w-full">
-          <span className="text-sm font-semibold">Decenter AI : </span>
-          <span className="text-sm font-light">App.decenterai.com</span>
+          <div className="flex justify-between text-sm items-center font-semibold mt-2 text-gray-400">
+            <p>owner: {job.owner}</p>
+          </div>
         </div>
-        <div className="flex justify-between text-sm items-center font-semibold mt-2 text-gray-400">
-          <p>Issues: 30</p>
-        </div>
-      </div>
+      ))}
     </div>
   );
 }

@@ -1,6 +1,6 @@
 "use client";
 import React, { useContext, useEffect, useState } from "react";
-import { AuthContext } from "@/App";
+import { AuthContext, JobContext } from "@/App";
 import { Button } from "./ui/button";
 import { FaPlus } from "react-icons/fa6";
 import {
@@ -22,42 +22,55 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Link } from "react-router-dom";
 import JobList from "./JobList";
-import { getOrgs } from "@/lib/github.utils";
+import { getOrgs, getRepos } from "@/lib/github.utils";
 import { useOrganisationContract } from "@/hooks/useOrgContract";
+import { jobSchema } from "@/validators/GitFormValidators";
+import { createJob } from "@/lib/backendUtils";
 
-interface IOrgs {
+export interface IOrgs {
   login: string;
   id: number;
 }
+export interface IRepos {
+  name: string;
+  url: string;
+  owner: {
+    login: string;
+  };
+  id: number;
+}
+
 export default function OrganizationView() {
   const { state, dispatch } = useContext(AuthContext);
-
+  const [repos, setRepos] = useState<IRepos[] | null>(null);
   const [orgs, setOrgs] = useState<IOrgs[] | null>(null);
-  const { getBalance, getRepos, getAvailableAmount, getJobs } =
-    useOrganisationContract();
-
-  const checkBal = async () => {
-    const bal: any = await getBalance();
-    console.log(bal);
-  };
-
-  const fetchRepos = async () => {
-    const repos = await getRepos();
-    console.log(repos);
-  };
-
-  const fetchJobs = async () => {
-    const jobs = await getJobs();
-    console.log(jobs);
-  };
-
-  const fetchAvailableAmount = async () => {
-    const amt = await getAvailableAmount();
-    console.log(amt);
-  };
+  const [disabled, setDisabled] = useState<boolean>(true);
+  const { getBalance, getAvailableAmount, getJobs } = useOrganisationContract();
+  const { jobState, dispatchJob } = useContext(JobContext);
+  //define form
+  const form = useForm<z.infer<typeof jobSchema>>({
+    resolver: zodResolver(jobSchema),
+    defaultValues: {
+      orgName: "",
+      repoName: "",
+    },
+  });
 
   const getUsersOrgs = async () => {
     //.log(state.user.access_token);
@@ -66,11 +79,41 @@ export default function OrganizationView() {
     setOrgs(orgs);
   };
 
+  const getGitRepos = async (org: string) => {
+    const repos = await getRepos(org, state.user.access_token);
+    setRepos(repos);
+  };
+
   useEffect(() => {
     getUsersOrgs();
   }, [state]);
 
-  //fetchJobs();
+  useEffect(() => {
+    const orgName = form.getValues("orgName");
+    const repoName = form.getValues("repoName");
+    if (!orgName) return;
+    getGitRepos(orgName);
+    if (orgName && repoName) setDisabled(false);
+  }, [form.watch("orgName"), form.watch("repoName")]);
+
+  const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    console.log(e.target.value);
+  };
+
+  const onSubmit = async (values: z.infer<typeof jobSchema>) => {
+    const data = {
+      owner: state.user.email,
+      org: values.orgName,
+      repo: values.repoName,
+    };
+
+    const job = await createJob(state.user.access_token, data);
+
+    dispatchJob({
+      type: "ADD_JOB",
+      payload: job.job,
+    });
+  };
 
   return (
     <div className="h-full py-2">
@@ -95,42 +138,91 @@ export default function OrganizationView() {
               </DialogDescription>
             </DialogHeader>
             <div className="grid gap-4 py-4">
-              <div className="grid grid-cols-1 items-center gap-4">
-                <Select>
-                  <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Select Organization" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectGroup>
-                      <SelectLabel>Organizations</SelectLabel>
-                      {orgs?.map((org, idx) => (
-                        <SelectItem key={idx} value={org.login}>
-                          {org.login}
-                        </SelectItem>
-                      ))}
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
+              <Form {...form}>
+                <form
+                  onSubmit={form.handleSubmit(onSubmit)}
+                  className="grid grid-cols-1 items-center gap-4"
+                >
+                  <FormField
+                    control={form.control}
+                    name="orgName"
+                    render={({ field }: { field: any }) => (
+                      <FormItem>
+                        {/* <FormLabel>Token</FormLabel> */}
+                        <Select
+                          onValueChange={field.onChange}
+                          defaultValue={field.value}
+                        >
+                          <FormControl>
+                            <SelectTrigger className="w-full">
+                              <SelectValue placeholder="Select Organization" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectGroup>
+                              <SelectLabel>Organizations</SelectLabel>
+                              {orgs?.map((org, idx) => (
+                                <SelectItem key={idx} value={org.login}>
+                                  {org.login}
+                                </SelectItem>
+                              ))}
+                            </SelectGroup>
+                          </SelectContent>
+                        </Select>
+                        {/* <FormDescription>
+                                        Gas fee will be charged on the selected token
 
-                <Select>
-                  <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Select Repo" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectGroup>
-                      <SelectLabel>Repository</SelectLabel>
-                      <SelectItem value="decenterai">Decenter AI</SelectItem>
-                      <SelectItem value="tonjobs">TonJobs</SelectItem>
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
-              </div>
+                                    </FormDescription> */}
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="repoName"
+                    render={({ field }: { field: any }) => (
+                      <FormItem>
+                        {/* <FormLabel>Token</FormLabel> */}
+                        <Select
+                          onValueChange={field.onChange}
+                          defaultValue={field.value}
+                        >
+                          <FormControl>
+                            <SelectTrigger className="w-full">
+                              <SelectValue placeholder="Select Repo" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectGroup>
+                              <SelectLabel>Repos</SelectLabel>
+                              {repos?.map((repo, idx) => (
+                                <SelectItem key={idx} value={repo.name}>
+                                  {repo.name}
+                                </SelectItem>
+                              ))}
+                            </SelectGroup>
+                          </SelectContent>
+                        </Select>
+                        {/* <FormDescription>
+                                        Gas fee will be charged on the selected token
+
+                                    </FormDescription> */}
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <DialogFooter>
+                    <DialogClose asChild>
+                      <Button disabled={disabled} type="submit">
+                        Save
+                      </Button>
+                    </DialogClose>
+                  </DialogFooter>
+                </form>
+              </Form>
             </div>
-            <DialogFooter>
-              <DialogClose asChild>
-                <Button type="submit">Save</Button>
-              </DialogClose>
-            </DialogFooter>
           </DialogContent>
         </Dialog>
       </div>
