@@ -3,7 +3,7 @@ import { Organisation } from '../wrappers/Organisation';
 import { NetworkProvider } from '@ton/blueprint';
 
 export async function run(provider: NetworkProvider) {
-    const organisation = provider.open(await Organisation.fromInit());
+    const organisation = provider.open(await Organisation.fromInit(35n));
 
     await organisation.send(
         provider.sender(),
@@ -13,7 +13,7 @@ export async function run(provider: NetworkProvider) {
         {
             $$type: 'Deploy',
             queryId: 0n,
-        }
+        },
     );
 
     await provider.waitForDeploy(organisation.address);

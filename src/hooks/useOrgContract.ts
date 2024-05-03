@@ -1,7 +1,7 @@
 import { Organisation } from "../../contract/wrappers/Organisation";
 import { useAsyncInitialize } from "@/hooks/useAsyncInitialize";
 import { useTonClient } from "@/hooks/useTonClient";
-import { Address, OpenedContract, toNano } from "ton-core";
+import { Address, OpenedContract, fromNano, toNano } from "ton-core";
 import { useTonConnect } from "./useTonConnect";
 
 interface IJob {
@@ -27,7 +27,7 @@ export function useOrganisationContract() {
     if (!client) return;
 
     const contract = Organisation.fromAddress(
-      Address.parse("EQC97rXtWtr482VBDS75c48B7EaFAh3cts-J3o3n7K_0gSCu") // replaCE  with actuall address
+      Address.parse("EQDi7HR8NxcHIHonz85O6WGqec_T6Vh2geI7WLQZNI6Ta0_R") // replaCE  with actuall address
     );
 
     //@ts-ignore
@@ -62,19 +62,29 @@ export function useOrganisationContract() {
     );
   };
 
-  const activateJob = async (jobId: number, amount: number) => {
-    amount += 0.05;
+  const activateJob = async (
+    repoId: number,
+    issueId: number,
+    amount: number
+  ) => {
     //@ts-ignore
-    await orgContract?.send(
+    const charge = Number(await orgContract?.getCharge());
+    const storageCharge = Number(0.05);
+    const reward = charge + storageCharge + amount;
+
+    //@ts-ignore
+    const res = await orgContract?.send(
       sender,
       {
-        value: toNano(amount),
+        value: toNano(reward.toString()),
       },
       {
         $$type: "ActivateJob",
-        jobID: jobId,
+        repoId: BigInt(repoId),
+        issueId: BigInt(issueId),
       }
     );
+    console.log(res);
   };
 
   const completedJob = async (job: IJobCompleted) => {
@@ -96,19 +106,27 @@ export function useOrganisationContract() {
     return await orgContract?.getBalance();
   };
 
-  const getJobs = async () => {
+  const getJob = async (issueId: number) => {
     //@ts-ignore
-    return await orgContract?.getGetJobs();
-  };
+    const reward = await orgContract?.getJobReward(BigInt(issueId));
+    //@ts-ignore
+    const isActive = await orgContract?.getJobState(BigInt(issueId));
 
-  const getRepos = async () => {
     //@ts-ignore
-    return await orgContract?.getGetRepos();
-  };
+    // const job = await orgContract?.getJob(BigInt(issueId));
+    // console.log(job);
+    // @ts-ignore
+    const completedBy = await orgContract?.getJobCompletedBy(BigInt(issueId));
+    //@ts-ignore
+    // const bal = await orgContract?.getDepositData(
+    //   Address.parse("kQDJrhMujiaTPJ7qdvLHd3Sp7QwJOVGh5TN4GaSPxHVVSRJC")
+    // );
 
-  const getAvailableAmount = async () => {
-    //@ts-ignore
-    return await orgContract?.getWithdrawableAmount();
+    return {
+      isActive,
+      reward: reward && fromNano(reward),
+      completedBy: undefined,
+    };
   };
 
   return {
@@ -117,8 +135,7 @@ export function useOrganisationContract() {
     activateJob,
     completedJob,
     getBalance,
-    getAvailableAmount,
-    getJobs,
-    getRepos,
+    getJob,
+    orgContract,
   };
 }

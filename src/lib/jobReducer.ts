@@ -2,6 +2,7 @@ export const initialJobState = {
   jobId: null,
   isJobSelected: false,
   jobList: [],
+  orgActiveJobList: [],
 };
 
 export const jobReducer = (state: any, action: any) => {
@@ -16,6 +17,20 @@ export const jobReducer = (state: any, action: any) => {
         ...state,
         isJobSelected: action.payload.isJobSelected,
         jobId: action.payload.jobId,
+      };
+    }
+
+    case "INIT_JOB": {
+      return {
+        ...state,
+        jobList: action.payload,
+      };
+    }
+
+    case "INIT_ORG_ACTIVE_JOB_LIST": {
+      return {
+        ...state,
+        orgActiveJobList: action.payload,
       };
     }
 

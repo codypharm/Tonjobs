@@ -1,7 +1,10 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Button } from "./ui/button";
+import { JobContext } from "@/App";
 
 export default function OpenJobList() {
+
+ 
   return (
     <div className="h-full flex flex-col gap-2   font-semibold text-foreground px-2 overflow-y-auto pb-10">
       <div className="w-full flex flex-col gap-3 h-auto py-2 rounded-md mt-4 px-2 border border-border ">

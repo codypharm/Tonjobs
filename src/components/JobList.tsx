@@ -8,20 +8,20 @@ export default function JobList() {
   const { jobs } = useGetJobs();
 
   // console.log(state.user.access_token);
-  const changeJob = () => {
+  const changeJob = (id: number) => {
     dispatchJob({
       type: "SELECT_JOB",
-      payload: { jobId: 1, isJobSelected: true },
+      payload: { jobId: id, isJobSelected: true },
     });
   };
 
   useEffect(() => {});
   return (
-    <div className="h-[90%] pt-4 flex flex-col gap-2 border-b border-border  font-semibold text-foreground px-2 overflow-y-auto">
+    <div className="h-[90%] pt-4 flex flex-col gap-2 border-b border-border  cursor-pointer font-semibold text-foreground px-2 overflow-y-auto">
       {jobs.map((job, id) => (
         <div
           key={id}
-          onClick={changeJob}
+          onClick={() => changeJob(id)}
           className="w-full h-auto py-2 px-3 border-b border-border hover:shadow-sm "
         >
           <div className=" flex gap-2 w-full">

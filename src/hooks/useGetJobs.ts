@@ -1,10 +1,11 @@
-import { AuthContext } from "@/App";
+import { AuthContext, JobContext } from "@/App";
 import { getJobs } from "@/lib/backendUtils";
 import { IJob } from "@/lib/interfaces";
 import { useContext, useEffect, useState } from "react";
 
 export function useGetJobs() {
   const { state, dispatch } = useContext(AuthContext);
+  const { jobState, dispatchJob } = useContext(JobContext);
 
   const [jobs, setJobs] = useState<IJob[] | []>([]);
 
@@ -12,8 +13,12 @@ export function useGetJobs() {
     const list: {
       jobs: IJob[];
     } = await getJobs(state.user.accessCode);
-    console.log(list);
+
     setJobs(list.jobs);
+    dispatchJob({
+      type: "INIT_JOB",
+      payload: list.jobs,
+    });
   };
 
   useEffect(() => {

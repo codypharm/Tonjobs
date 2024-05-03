@@ -61,7 +61,7 @@ export default function OrganizationView() {
   const [repos, setRepos] = useState<IRepos[] | null>(null);
   const [orgs, setOrgs] = useState<IOrgs[] | null>(null);
   const [disabled, setDisabled] = useState<boolean>(true);
-  const { getBalance, getAvailableAmount, getJobs } = useOrganisationContract();
+  const { getBalance } = useOrganisationContract();
   const { jobState, dispatchJob } = useContext(JobContext);
   //define form
   const form = useForm<z.infer<typeof jobSchema>>({

@@ -13,8 +13,8 @@ struct Job {
     isActive: Bool = false;
     reward: Int as coins;
     isCompleted: Bool = false;
-    completedBy: Address?;
-    owner: Address?;
+    completedBy: Address;
+    owner: Address;
     employer:Address;
 }
 
@@ -123,7 +123,7 @@ contract Organisation with Deployable {
         }
        
         self.jobs.set(msg.issueId,
-            Job{repoId: msg.repoId, issueId: msg.issueId, isActive: true, reward: reward, completedBy: null,owner: null, employer: sender()}
+            Job{repoId: msg.repoId, issueId: msg.issueId, isActive: true, reward: reward, completedBy: newAddress(0,0),owner: newAddress(0,0), employer: sender()}
         );
        
     }
@@ -222,11 +222,47 @@ contract Organisation with Deployable {
     get fun job(id: Int) : Job?{
         let data : Job? = self.jobs.get(id);
         if(data != null){
-            return self.jobs.get(id)!!;
+            let job : Job =  self.jobs.get(id)!!;
+            return job;
         }else{
-            return null;
+            return Job{repoId: 0, issueId: 0, isActive: false, reward: 0, completedBy: newAddress(0,0),owner: newAddress(0,0), employer: newAddress(0,0)};
         }
     }
+
+    get fun jobState(id: Int) : Bool{
+        let data : Job? = self.jobs.get(id);
+        if(data != null){
+            let job: Job =  self.jobs.get(id)!!;
+            let state: Bool =  job.isActive;
+            return state;
+        }else{
+            return false;
+        }
+    }
+
+get fun jobReward(id: Int) : Int{
+        let data : Job? = self.jobs.get(id);
+        if(data != null){
+            let job: Job =  self.jobs.get(id)!!;
+            let reward: Int =  job.reward;
+            return reward;
+        }else{
+            return 0;
+        }
+    }
+
+    get fun jobCompletedBy(id: Int) : Address{
+        let data : Job? = self.jobs.get(id);
+        if(data != null){
+            let job: Job =  self.jobs.get(id)!!;
+            let by: Address =  job.completedBy;
+            return by;
+        }else{
+            return newAddress(0,0);
+        }
+    }
+
+
 
     get fun incomeData(addr : Address) : Income? {
         
@@ -234,7 +270,10 @@ contract Organisation with Deployable {
         if(data != null){
             return self.userIncomes.get(addr)!!;
         }else{
-            return null;
+            return Income{
+                user: sender(),
+                amount:0
+            };
         }
     }
 
@@ -244,7 +283,7 @@ contract Organisation with Deployable {
             let defData: Deposit =  self.userDeposits.get(addr)!!;
             return defData.amount.toCoinsString();
         }else{
-            return null;
+            return "unknown";
         }
        
     }

@@ -60,4 +60,48 @@ export async function getRepos(org: string, accessCode: string) {
   }
 }
 
-//get
+export async function getRepoInfo(
+  org: string,
+  repo: string,
+  accessCode: string
+) {
+  try {
+    const response = await axios.get(
+      `https://api.github.com/repos/${org}/${repo}`,
+      {
+        headers: {
+          Authorization: `Bearer ${accessCode}`,
+        },
+      }
+    );
+
+    // console.log(response.data);
+    return response.data;
+  } catch (error) {
+    console.error("Error getting repo info:", error);
+    return [];
+  }
+}
+
+export async function getIssues(
+  owner: string,
+  repo: string,
+  accessCode: string
+) {
+  try {
+    const response = await axios.get(
+      `https://api.github.com/repos/${owner}/${repo}/issues?state=open`,
+      {
+        headers: {
+          Authorization: `Bearer ${accessCode}`,
+        },
+      }
+    );
+
+    // console.log(response.data);
+    return response.data;
+  } catch (error) {
+    console.error("Error getting open issues:", error);
+    return [];
+  }
+}
