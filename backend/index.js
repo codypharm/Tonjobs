@@ -6,6 +6,7 @@ const MongoClient = require("mongodb").MongoClient;
 const multer = require("multer");
 const { client_id, redirect_uri, client_secret } = require("./config");
 const taskRouter = require("./routes/taskRoute");
+const acceptedTaskRouter = require("./routes/acccptedTaskRoute");
 const jobRouter = require("./routes/jobRoute");
 const config = require("./config");
 const connectDB = require("./db");
@@ -63,6 +64,7 @@ app.post("/authenticate", (req, res) => {
 });
 
 app.use("/api/v1/tasks", taskRouter);
+app.use("/api/v1/tasksacceptance", acceptedTaskRouter);
 app.use("/api/v1/jobs", jobRouter);
 
 app.get("/", (req, res) => {});
