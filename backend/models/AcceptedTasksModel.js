@@ -5,6 +5,10 @@ const acceptedTaskSchema = new mongoose.Schema({
     type: String,
     required: [true, "Please provide email"],
   },
+  issueNumber: {
+    type: Number,
+    required: [true, "Please add issue number"],
+  },
   issueId: {
     type: Number,
     required: [true, "Please add issue id"],
