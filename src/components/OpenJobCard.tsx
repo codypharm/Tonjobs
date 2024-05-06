@@ -39,6 +39,7 @@ export default function OpenJobCard({ job }: { job: IJob }) {
       repoId: repoInfo.id,
       reward: job.reward,
       title: job.title,
+      issueNumber: job.number,
     };
     try {
       await acceptTask(state.user.access_token, data);

@@ -66,11 +66,11 @@ export default function Contributor() {
             <TonConnectButton />
           </div>
         )}
-        <Tabs defaultValue="jobs" className="h-full">
+        <Tabs defaultValue="tasks" className="h-full">
           <TabsList className=" h-[10%] w-full bg-white rounded-none border-b-2">
             <TabsTrigger value="jobs">Jobs</TabsTrigger>
             <TabsTrigger value="board">Leader Board</TabsTrigger>
-            <TabsTrigger value="MyTasks">Tasks</TabsTrigger>
+            <TabsTrigger value="tasks">Tasks</TabsTrigger>
           </TabsList>
           <TabsContent value="jobs" className="h-[87%]">
             <OpenJobs />{" "}
@@ -78,7 +78,7 @@ export default function Contributor() {
           <TabsContent value="board" className="h-[87%]">
             <LeaderBoard />
           </TabsContent>
-          <TabsContent value="MyTasks" className="h-[87%]">
+          <TabsContent value="tasks" className="h-[87%]">
             <MyTasks />
           </TabsContent>
         </Tabs>

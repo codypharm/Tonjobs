@@ -1,6 +1,17 @@
-const mongoose = require("mongoose");
+import mongoose, { Schema, Document } from "mongoose";
 
-const acceptedTaskSchema = new mongoose.Schema({
+interface AcceptedTask extends Document {
+  email: string;
+  issueNumber: number;
+  issueId: number;
+  repoId: number;
+  title: string;
+  reward: number;
+  org: string;
+  repo: string;
+}
+
+const acceptedTaskSchema: Schema<AcceptedTask> = new Schema({
   email: {
     type: String,
     required: [true, "Please provide email"],
@@ -35,4 +46,7 @@ const acceptedTaskSchema = new mongoose.Schema({
   },
 });
 
-module.exports = mongoose.model("AcceptedTasks", acceptedTaskSchema);
+const AcceptedTasks =
+  mongoose.model < AcceptedTask > ("AcceptedTasks", acceptedTaskSchema);
+
+export default AcceptedTasks;

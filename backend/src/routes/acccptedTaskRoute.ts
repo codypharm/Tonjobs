@@ -1,14 +1,15 @@
-const {
+import { Request, Response } from "express";
+import {
   createTask,
   getAcceptedTasks,
   claimTask,
-} = require("../controllers/AcceptedTaskController");
-const express = require("express");
+} from "../controllers/AcceptedTaskController";
+import express from "express";
+
 const router = express.Router();
 
-// games routes
+// AcceptedTask routes
 router.route("/").post(createTask).get(getAcceptedTasks);
 router.route("/claim").post(claimTask);
-// favorites routes
 
-module.exports = router;
+export default router;
