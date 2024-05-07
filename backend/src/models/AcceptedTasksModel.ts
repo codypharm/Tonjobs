@@ -9,6 +9,7 @@ interface AcceptedTask extends Document {
   reward: number;
   org: string;
   repo: string;
+  verified: Boolean;
 }
 
 const acceptedTaskSchema: Schema<AcceptedTask> = new Schema({
@@ -44,9 +45,15 @@ const acceptedTaskSchema: Schema<AcceptedTask> = new Schema({
     type: String,
     required: [true, "Please add repo name"],
   },
+  verified: {
+    type: Boolean,
+    default: false,
+  },
 });
 
-const AcceptedTasks =
-  mongoose.model < AcceptedTask > ("AcceptedTasks", acceptedTaskSchema);
+const AcceptedTasks = mongoose.model<AcceptedTask>(
+  "AcceptedTasks",
+  acceptedTaskSchema
+);
 
 export default AcceptedTasks;

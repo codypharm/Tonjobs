@@ -1,4 +1,5 @@
 import axios from "axios";
+import { Address } from "ton-core";
 
 interface IJob {
   owner: string;
@@ -16,6 +17,8 @@ export interface IAcceptance {
   reward: number;
   issueNumber: number;
   prNumber: number;
+  completedBy: string;
+  verified: boolean;
 }
 
 // user orgs

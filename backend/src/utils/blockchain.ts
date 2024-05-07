@@ -6,7 +6,7 @@ import { Address, OpenedContract, fromNano, toNano } from "ton-core";
 import config from "../config";
 import { Organisation } from "../../../contract/wrappers/Organisation";
 
-async function verifyClaim() {
+export async function verifyClaim(id: number, user: Address) {
   const mnemonic = `${process.env.MNEMONIC}`;
   const key = await mnemonicToWalletKey(mnemonic.split(" "));
   const wallet = WalletContractV4.create({
@@ -19,7 +19,7 @@ async function verifyClaim() {
 
   if (await client.isContractDeployed(wallet.address)) {
     console.log(await client.getBalance(wallet.address));
-    return console.log("wallet deployed");
+    // return console.log("wallet deployed");
   }
   const walletContract = client.open(wallet);
   const seqno = await walletContract.getSeqno();
@@ -31,7 +31,18 @@ async function verifyClaim() {
   const orgContract = client.open(contract) as OpenedContract<Organisation>;
   //@ts-ignore
   const charge = Number(await orgContract?.getCharge());
-  console.log("🚀 ~ verifyClaim ~ charge:", charge);
-}
+  //@ts-ignore
+  await orgContract?.send(
+    wallet,
+    {
+      value: toNano("0.02"),
+    },
+    {
+      $$type: "VerifyJobClaim",
+      issueId: BigInt(id),
+      completedBy: user,
+    }
+  );
 
-verifyClaim();
+  return true;
+}

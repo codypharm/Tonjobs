@@ -1,1 +1,1 @@
-export * from '../build/Organisation/tact_Organisation';
+export { Organisation } from '../build/Organisation/tact_Organisation';

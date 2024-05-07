@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
 import Tasks from "../models/AcceptedTasksModel";
 import axios from "axios";
+import { verifyClaim } from "../utils/blockchain";
 
 type Task = {
   _id: string;
@@ -17,7 +18,7 @@ const createTask = async (req: Request, res: Response) => {
       });
     } else {
       const task: Task = await Tasks.create({ ...req.body });
-      console.log(task);
+      // console.log(task);
 
       res.status(StatusCodes.CREATED).json({
         task,
@@ -93,6 +94,22 @@ async function verify(data: any, accessCode: string, res: Response) {
       res
         .status(StatusCodes.INTERNAL_SERVER_ERROR)
         .json({ error: "Issue still open" });
+    }
+
+    if (verifyClaim(data.issueId, data.completedBy)) {
+      //updated verified state
+      const verifiedTask = await Tasks.findOneAndUpdate(
+        { _id: data._id },
+        { verified: true }
+      );
+
+      res.status(StatusCodes.OK).json({
+        verifiedTask,
+      });
+    } else {
+      res
+        .status(StatusCodes.INTERNAL_SERVER_ERROR)
+        .json({ error: "Blockchain transaction failed" });
     }
   } catch (error: any) {
     console.error("Error performing task:", error);

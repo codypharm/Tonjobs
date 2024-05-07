@@ -3,16 +3,28 @@ import React, { useContext, useState } from "react";
 import { Input } from "./ui/input";
 import { AuthContext } from "@/App";
 import { Button } from "./ui/button";
+import { useTonConnect } from "@/hooks/useTonConnect";
+import { useTonClient } from "@/hooks/useTonClient";
+import { useTonAddress } from "@tonconnect/ui-react";
 
 export default function TaskCard({ task }: { task: IAcceptance }) {
   const { state, dispatch } = useContext(AuthContext);
   const [prNumber, setPrNumber] = useState<number>(0);
   const [error, setError] = useState<string>("");
+  const [verified, setSetVerified] = useState<boolean>(false);
 
+  const userFriendlyAddress = useTonAddress();
+
+  //@ts-ignore
   const verify = async (task: IAcceptance) => {
     if (!prNumber) return;
-    const req = await claimTask(state.user.access_token, task, prNumber);
-    if (req.error) setError(req.error);
+    task.completedBy = userFriendlyAddress;
+    const res = await claimTask(state.user.access_token, task, prNumber);
+    if (res.error) {
+      setError(res.error);
+    } else {
+      setSetVerified(true);
+    }
   };
   return (
     <div className="w-full flex flex-col gap-3 h-auto py-2 rounded-md mt-4 px-2 border border-border ">
@@ -35,12 +47,25 @@ export default function TaskCard({ task }: { task: IAcceptance }) {
         }}
       />
       <p className="text-xs text-red-600 text-center">{error}</p>
-      <Button
-        className="hover:bg-primary hover:text-white"
-        onClick={() => verify(task)}
-      >
-        Verify
-      </Button>
+      {!verified && !task.verified && (
+        <Button
+          variant={"outline"}
+          className="hover:bg-primary hover:text-white"
+          onClick={() => verify(task)}
+        >
+          Verify
+        </Button>
+      )}
+
+      {verified ||
+        (task.verified && (
+          <Button
+            className="hover:bg-primary hover:text-white"
+            onClick={() => verify(task)}
+          >
+            Claim
+          </Button>
+        ))}
     </div>
   );
 }
